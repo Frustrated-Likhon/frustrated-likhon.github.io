@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     }
 
+    
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -76,19 +77,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const scrollHint = document.querySelector('.scroll-hint');
     const progressBar = document.querySelector('.progress-bar');
     
-    function updateScrollProgress() {
-        if (!scrollHint) return;
-        
-        const scrollTop = window.scrollY;
+    
+    function getScrollPercent() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
         const windowHeight = window.innerHeight;
         const fullHeight = document.documentElement.scrollHeight;
         const maxScroll = fullHeight - windowHeight;
         
+        if (maxScroll <= 0) return 0;
+        return (scrollTop / maxScroll) * 100;
+    }
+    
+    function updateScrollProgress() {
+        if (!scrollHint) return;
         
-        let scrollPercent = 0;
-        if (maxScroll > 0) {
-            scrollPercent = (scrollTop / maxScroll) * 100;
-        }
+        const scrollPercent = getScrollPercent();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const windowHeight = window.innerHeight;
+        const fullHeight = document.documentElement.scrollHeight;
         
         
         if (progressBar) {
@@ -101,16 +107,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         scrollHint.style.opacity = opacity;
         
-        
-        
+       
         if (scrollTop + windowHeight >= fullHeight - 80) {
             scrollHint.style.opacity = '0';
             scrollHint.style.pointerEvents = 'none';
         } else {
             scrollHint.style.pointerEvents = 'auto';
             
+            //change the opacity from here!!!!!!
             
-            if (scrollPercent > 70) {
+            if (scrollPercent > 1) {
                 scrollHint.style.boxShadow = '0 0 12px rgba(86, 182, 194, 0.4)';
             } else {
                 scrollHint.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
@@ -118,51 +124,82 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+  
+    function scrollToNext() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const windowHeight = window.innerHeight;
+        const fullHeight = document.documentElement.scrollHeight;
+        const scrollPercent = getScrollPercent();
+        
+        
+        let nextSection = null;
+        let nextSectionOffset = Infinity;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (sectionTop > scrollTop + 50 && sectionTop < nextSectionOffset) {
+                nextSectionOffset = sectionTop;
+                nextSection = section;
+            }
+        });
+        
+        if (nextSection) {
+            nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (scrollPercent < 95) {
+           
+            window.scrollBy({ 
+                top: windowHeight * 0.8, 
+                behavior: 'smooth' 
+            });
+        } else {
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    
     
     if (scrollHint) {
         scrollHint.addEventListener('click', function(e) {
             e.stopPropagation();
-            
-            const scrollTop = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const fullHeight = document.documentElement.scrollHeight;
-            const currentProgress = (scrollTop / (fullHeight - windowHeight)) * 100;
-            
-            
-            let nextSection = null;
-            let nextSectionOffset = Infinity;
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (sectionTop > scrollTop + 50 && sectionTop < nextSectionOffset) {
-                    nextSectionOffset = sectionTop;
-                    nextSection = section;
-                }
-            });
-            
-            if (nextSection) {
-                nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else if (currentProgress < 95) {
-               
-                window.scrollBy({ top: windowHeight * 0.8, behavior: 'smooth' });
-            } else {
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            scrollToNext();
+        });
+        
+        
+        scrollHint.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            scrollToNext();
         });
     }
     
-    window.addEventListener('scroll', updateScrollProgress);
+    
     updateScrollProgress();
     
     
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                updateScrollProgress();
+                updateActiveNavLink();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    
+    window.addEventListener('resize', function() {
+        updateScrollProgress();
+    });
+    
+    
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'Space') {
+       
+        if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'Space' || e.keyCode === 32 || e.keyCode === 40) {
             e.preventDefault();
             
-            const scrollTop = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const fullHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
             
             let nextSection = null;
             let nextSectionOffset = Infinity;
@@ -177,18 +214,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (nextSection) {
                 nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else if (scrollTop + windowHeight < fullHeight - 50) {
-                window.scrollBy({ top: windowHeight * 0.7, behavior: 'smooth' });
             } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollBy({ top: window.innerHeight * 0.7, behavior: 'smooth' });
             }
         }
         
         
-        if (e.key === 'ArrowUp') {
+        if (e.key === 'ArrowUp' || e.keyCode === 38) {
             e.preventDefault();
             
-            const scrollTop = window.scrollY;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
             
             let prevSection = null;
             let prevSectionOffset = -Infinity;
@@ -210,4 +245,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    
+    
+    if (!('scrollBehavior' in document.documentElement.style)) {
+        console.log('Smooth scrolling not supported, using fallback');
+    }
 });
