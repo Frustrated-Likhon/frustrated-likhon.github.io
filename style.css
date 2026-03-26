@@ -684,7 +684,6 @@ footer {
     margin-right: 4px;
 }
 
-
 .scroll-hint {
     position: fixed;
     bottom: 20px;
@@ -694,38 +693,45 @@ footer {
     font-family: var(--font-mono);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .scroll-hint.interactive-scroll {
     background: rgba(15, 18, 21, 0.75);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(86, 182, 194, 0.3);
     border-radius: 20px;
     padding: 5px 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
 }
 
 .scroll-hint-inner {
     display: flex;
     align-items: center;
     gap: 6px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .scroll-hint .prompt {
     color: var(--accent-green);
     font-size: 0.7rem;
     margin-right: 0;
+    display: inline-block;
 }
 
 .scroll-hint .command {
     color: var(--accent-cyan);
     font-size: 0.7rem;
+    display: inline-block;
 }
 
 .scroll-hint .arg {
     color: var(--accent-yellow);
     font-size: 0.7rem;
+    display: inline-block;
 }
 
 .scroll-progress {
@@ -735,6 +741,8 @@ footer {
     border-radius: 3px;
     overflow: hidden;
     position: relative;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .progress-bar {
@@ -753,6 +761,8 @@ footer {
     font-size: 0.8rem;
     animation: bounceSoft 1.2s infinite;
     margin-left: 2px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .scroll-tooltip {
@@ -793,6 +803,13 @@ footer {
     50% {
         transform: translateY(4px);
         opacity: 1;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: hover) {
+    .scroll-hint:hover {
+        background: rgba(15, 18, 21, 0.9);
     }
 }
 
@@ -1037,38 +1054,4 @@ footer {
     }
 
     .terminal-header {
-        padding: 0.4rem 0.75rem;
-    }
-
-    .terminal-dots {
-        gap: 0.25rem;
-    }
-
-    .dot {
-        width: 8px;
-        height: 8px;
-    }
-
-    .project-header {
-        padding: 0.6rem 0.75rem;
-    }
-
-    .arrow {
-        font-size: 0.7rem;
-        width: 14px;
-    }
-
-    .project-tag {
-        font-size: 0.6rem;
-        padding: 0.15rem 0.4rem;
-    }
-
-    .contact-header {
-        padding: 0.75rem;
-    }
-
-    .contact-header i {
-        font-size: 0.9rem;
-    }
-
-    .con
+        paddi
