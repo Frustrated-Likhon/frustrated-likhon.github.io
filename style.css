@@ -684,6 +684,118 @@ footer {
     margin-right: 4px;
 }
 
+
+.scroll-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-hint.interactive-scroll {
+    background: rgba(15, 18, 21, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(86, 182, 194, 0.3);
+    border-radius: 20px;
+    padding: 5px 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-hint-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.scroll-hint .prompt {
+    color: var(--accent-green);
+    font-size: 0.7rem;
+    margin-right: 0;
+}
+
+.scroll-hint .command {
+    color: var(--accent-cyan);
+    font-size: 0.7rem;
+}
+
+.scroll-hint .arg {
+    color: var(--accent-yellow);
+    font-size: 0.7rem;
+}
+
+.scroll-progress {
+    width: 45px;
+    height: 3px;
+    background: rgba(44, 49, 58, 0.8);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+    border-radius: 3px;
+    transition: width 0.1s linear;
+}
+
+.scroll-hint .arrow {
+    color: var(--accent-green);
+    font-size: 0.8rem;
+    animation: bounceSoft 1.2s infinite;
+    margin-left: 2px;
+}
+
+.scroll-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    margin-bottom: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-cyan);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.65rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+}
+
+.scroll-hint:hover .scroll-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.scroll-tooltip i {
+    color: var(--accent-cyan);
+    margin-right: 5px;
+    font-size: 0.6rem;
+}
+
+@keyframes bounceSoft {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translateY(4px);
+        opacity: 1;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 0 1rem;
@@ -865,6 +977,33 @@ footer {
         width: 6px;
         height: 14px;
     }
+
+    .scroll-hint {
+        bottom: 15px;
+    }
+    
+    .scroll-hint.interactive-scroll {
+        padding: 4px 10px;
+    }
+    
+    .scroll-hint .prompt,
+    .scroll-hint .command,
+    .scroll-hint .arg {
+        font-size: 0.6rem;
+    }
+    
+    .scroll-progress {
+        width: 35px;
+        height: 2px;
+    }
+    
+    .scroll-hint .arrow {
+        font-size: 0.7rem;
+    }
+    
+    .scroll-tooltip {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
@@ -932,70 +1071,4 @@ footer {
         font-size: 0.9rem;
     }
 
-    .contact-header span {
-        font-size: 0.85rem;
-    }
-
-    .contact-body {
-        padding: 1rem;
-    }
-
-    .contact-row {
-        padding: 0.6rem;
-    }
-
-    .contact-comment {
-        margin-left: 1rem;
-        font-size: 0.65rem;
-    }
-
-    .footer-links {
-        gap: 0.75rem;
-    }
-
-    .footer-links a {
-        font-size: 0.75rem;
-    }
-}
-
-@media (max-width: 360px) {
-    .ascii-name {
-        font-size: 0.28rem;
-    }
-
-    .line-content {
-        font-size: 0.75rem;
-    }
-
-    .contact-command {
-        font-size: 0.7rem;
-    }
-
-    .contact-link {
-        font-size: 0.75rem;
-    }
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--accent-cyan);
-    border: 2px solid var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-blue);
-}
-
-::selection {
-    background: var(--accent-cyan);
-    color: var(--bg-primary);
-}
+    .con
